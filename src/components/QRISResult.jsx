@@ -2,25 +2,31 @@ import React, { useEffect, useState } from 'react';
 import QRCode from 'qrcode';
 import { MerchantInfo } from './MerchantInfo';
 import { formatRupiah } from '../utils/formatCurrency';
+import { generateQRWithLogo } from '../utils/qrGenerator';
 
-export default function QRISResult({ qrisData, merchantInfo, nominal, taxType, taxValue, includeTax }) {
+export default function QRISResult({ qrisData, merchantInfo, nominal, taxType, taxValue, includeTax, logoImage }) {
   const [qrCodeUrl, setQrCodeUrl] = useState('');
 
   useEffect(() => {
     const generateQR = async () => {
       try {
-        const url = await QRCode.toDataURL(qrisData, {
-          width: 512,
-          margin: 2,
-          scale: 4
-        });
-        setQrCodeUrl(url);
+        if (logoImage) {
+          const url = await generateQRWithLogo(qrisData, logoImage);
+          setQrCodeUrl(url);
+        } else {
+          const url = await QRCode.toDataURL(qrisData, {
+            width: 512,
+            margin: 2,
+            scale: 4
+          });
+          setQrCodeUrl(url);
+        }
       } catch (err) {
         console.error('Error generating QR code:', err);
       }
     };
     generateQR();
-  }, [qrisData]);
+  }, [qrisData, logoImage]);
 
   const calculateTotal = () => {
     const nominalAmount = parseInt(nominal, 10);

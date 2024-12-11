@@ -3,6 +3,7 @@ import { NumPad } from './NumPad';
 import { TaxSection } from './TaxSection';
 import { Modal } from './Modal';
 import QRISResult from './QRISResult';
+import { ImageUpload } from './ImageUpload';
 import { formatRupiah } from '../utils/formatCurrency';
 
 function QRISForm({ onGenerate }) {
@@ -12,7 +13,8 @@ function QRISForm({ onGenerate }) {
     nominal: '',
     includeTax: false,
     taxType: 'p',
-    taxValue: '0'
+    taxValue: '0',
+    logoImage: null
   });
   const [showResult, setShowResult] = useState(false);
   const [generatedData, setGeneratedData] = useState(null);
@@ -29,7 +31,8 @@ function QRISForm({ onGenerate }) {
           nominal: formData.nominal,
           taxType: formData.taxType,
           taxValue: formData.taxValue,
-          includeTax: formData.includeTax
+          includeTax: formData.includeTax,
+          logoImage: formData.logoImage
         });
         setShowResult(true);
       }
@@ -48,6 +51,13 @@ function QRISForm({ onGenerate }) {
     setFormData(prev => ({
       ...prev,
       nominal: value
+    }));
+  };
+
+  const handleImageSelect = (imageData) => {
+    setFormData(prev => ({
+      ...prev,
+      logoImage: imageData
     }));
   };
 
@@ -72,6 +82,7 @@ function QRISForm({ onGenerate }) {
               required
               placeholder="Paste your QRIS code here..."
             />
+            <ImageUpload onImageSelect={handleImageSelect} />
             <button
               type="submit"
               className="w-full mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
@@ -139,6 +150,7 @@ function QRISForm({ onGenerate }) {
             taxType={generatedData.taxType}
             taxValue={generatedData.taxValue}
             includeTax={generatedData.includeTax}
+            logoImage={generatedData.logoImage}
           />
         )}
       </Modal>
